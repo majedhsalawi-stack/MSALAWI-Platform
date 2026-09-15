@@ -1,9 +1,14 @@
+using Microsoft.EntityFrameworkCore;
 using MSALAWI.Application;
-using MSALAWI.Infrastructure;
+using MSALAWI.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IPersonRepository, InMemoryPersonRepository>();
+var connectionString = builder.Configuration.GetConnectionString("MSALAWI")
+    ?? throw new InvalidOperationException("Connection string 'MSALAWI' is required.");
+
+builder.Services.AddDbContext<MsalawiDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped<IPersonRepository, EfPersonRepository>();
 builder.Services.AddScoped<CreatePersonHandler>();
 builder.Services.AddProblemDetails();
 
