@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../Domains/IdentityPerson/MSALAWI.Domain.IdentityPerson.csproj" />
+  </ItemGroup>
+</Project>

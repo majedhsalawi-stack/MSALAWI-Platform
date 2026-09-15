@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../../Applications/MSALAWI.Application.csproj" />
+    <ProjectReference Include="../../Infrastructure/MSALAWI.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

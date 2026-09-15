@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/source/">
+    <Project Path="source/Shared/MSALAWI.Shared.csproj" />
+    <Project Path="source/Domains/IdentityPerson/MSALAWI.Domain.IdentityPerson.csproj" />
+    <Project Path="source/Applications/MSALAWI.Application.csproj" />
+    <Project Path="source/Infrastructure/MSALAWI.Infrastructure.csproj" />
+    <Project Path="source/Presentation/Api/MSALAWI.Presentation.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Domain.Tests/MSALAWI.Domain.Tests.csproj" />
+    <Project Path="tests/Application.Tests/MSALAWI.Application.Tests.csproj" />
+    <Project Path="tests/Architecture.Tests/MSALAWI.Architecture.Tests.csproj" />
+  </Folder>
+</Solution>
