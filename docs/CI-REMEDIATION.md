@@ -1,12 +1,19 @@
 # CI remediation — Sprint 2
 
-The PR #2 CI run failed on 2026-10-26.
+## CI failure review
+Initial PR checks failed on NuGet security audit and missing npm lockfile. The next run, commit 82acbbd, progressed through package restore and frontend installation, but failed on:
+- Backend: missing Xunit namespace import for Fact and Assert in PersonTests.cs.
+- Frontend: TS2882, missing Vite client declarations for CSS side-effect imports.
 
-## Root causes found in job logs
-- Backend restore: NU1902/NU1903 vulnerabilities in transitive cryptography packages; the EF Core Design tooling reference was a likely source. Removed the design package reference from the runtime infrastructure project pending a safer migration-tool strategy. **Must confirm with the next restore output.**
-- Frontend setup-node: configured npm caching against a missing package-lock.json. Disabled caching and used npm install temporarily. **Must commit a verified lockfile and return to npm ci before production.**
+## Changes
+- Removed EF Core Design reference from runtime project; package vulnerability auditing remains enabled.
+- Disabled npm caching pending a committed lockfile, and temporarily use npm install.
+- Added explicit Xunit import and Vite client type reference.
+- Disabled unauthenticated POST /api/people (503) pending tenant isolation and authentication.
 
-## Safety
-- The unauthenticated, unscoped POST /api/people route is now disabled with HTTP 503.
-- Do not bypass NuGet vulnerability warnings.
-- Do not merge until CI passes and migration, tenant isolation and audit persistence gates are satisfied.
+## Remaining gates
+- Confirm new CI results before accepting the build.
+- Generate and validate PostgreSQL EF migrations.
+- Add a committed frontend lockfile and switch to reproducible npm ci.
+- Implement authenticated organization tenancy, tenant-scoped repositories and durable audit persistence.
+- Test against PostgreSQL and complete security review before merge.
