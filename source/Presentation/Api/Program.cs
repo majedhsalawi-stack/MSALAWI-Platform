@@ -24,12 +24,12 @@ app.MapGet("/health", () => Results.Ok(new
     utc = DateTimeOffset.UtcNow
 }));
 
-app.MapPost("/api/people", async (CreatePersonCommand command, CreatePersonHandler handler, CancellationToken cancellationToken) =>
-{
-    var result = await handler.HandleAsync(command, cancellationToken);
-    return result.IsSuccess
-        ? Results.Created($"/api/people/{result.Value!.Id}", result.Value)
-        : Results.BadRequest(new { error = result.Error });
-});
+// Security gate: People API remains unavailable until authentication,
+// authorized tenant resolution, and tenant-scoped persistence are implemented.
+// Do not re-enable this endpoint based on client-supplied tenant IDs.
+app.MapPost("/api/people", () => Results.Problem(
+    title: "People API is not enabled",
+    detail: "Authentication and tenant isolation must be implemented first.",
+    statusCode: StatusCodes.Status503ServiceUnavailable));
 
 app.Run();
