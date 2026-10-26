@@ -4,6 +4,9 @@ namespace MSALAWI.Domain.IdentityPerson;
 
 public sealed class Person
 {
+    // Required by EF Core when materializing an existing aggregate.
+    private Person() { }
+
     private Person(EntityId id, string fullName, string? email)
     {
         Id = id;
@@ -11,8 +14,8 @@ public sealed class Person
         Email = email;
     }
 
-    public EntityId Id { get; }
-    public string FullName { get; private set; }
+    public EntityId Id { get; private set; }
+    public string FullName { get; private set; } = null!;
     public string? Email { get; private set; }
 
     public static Result<Person> Create(string fullName, string? email)
