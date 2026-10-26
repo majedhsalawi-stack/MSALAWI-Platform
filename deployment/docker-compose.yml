@@ -9,6 +9,11 @@ services:
       - "5432:5432"
     volumes:
       - msalawi_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U msalawi -d msalawi"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   api:
     build:
@@ -16,11 +21,12 @@ services:
       dockerfile: source/Presentation/Api/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__Primary: Host=postgres;Port=5432;Database=msalawi;Username=msalawi;Password=msalawi_local_only
+      ConnectionStrings__MSALAWI: Host=postgres;Port=5432;Database=msalawi;Username=msalawi;Password=msalawi_local_only
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
 volumes:
   msalawi_postgres:

@@ -1,9 +1,14 @@
+using Microsoft.EntityFrameworkCore;
 using MSALAWI.Application;
-using MSALAWI.Infrastructure;
+using MSALAWI.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IPersonRepository, InMemoryPersonRepository>();
+var connectionString = builder.Configuration.GetConnectionString("MSALAWI")
+    ?? throw new InvalidOperationException("Connection string 'MSALAWI' is required.");
+
+builder.Services.AddDbContext<MsalawiDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped<IPersonRepository, EfPersonRepository>();
 builder.Services.AddScoped<CreatePersonHandler>();
 builder.Services.AddProblemDetails();
 
@@ -19,12 +24,12 @@ app.MapGet("/health", () => Results.Ok(new
     utc = DateTimeOffset.UtcNow
 }));
 
-app.MapPost("/api/people", async (CreatePersonCommand command, CreatePersonHandler handler, CancellationToken cancellationToken) =>
-{
-    var result = await handler.HandleAsync(command, cancellationToken);
-    return result.IsSuccess
-        ? Results.Created($"/api/people/{result.Value!.Id}", result.Value)
-        : Results.BadRequest(new { error = result.Error });
-});
+// Security gate: People API remains unavailable until authentication,
+// authorized tenant resolution, and tenant-scoped persistence are implemented.
+// Do not re-enable this endpoint based on client-supplied tenant IDs.
+app.MapPost("/api/people", () => Results.Problem(
+    title: "People API is not enabled",
+    detail: "Authentication and tenant isolation must be implemented first.",
+    statusCode: StatusCodes.Status503ServiceUnavailable));
 
 app.Run();
